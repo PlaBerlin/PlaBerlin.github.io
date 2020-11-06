@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<!-- saved from url=(0028)http://58.59.92.190:5000/bot -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Medical Bot</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<!-- 引入 Bootstrap -->
+		<link href="./Medical Bot_files/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<!-- jQuery (Bootstrap 的 JavaScript 插件需要引入 jQuery) -->
+		<script src="./Medical Bot_files/jquery.min.js.下载"></script>
+
+		<script type="text/javascript">
+			
+			$(document).ready(function(){
+				$("#sub").click(function(){
+					var user_query = document.getElementById("query").value;
+					// 调用槽位填充模块
+					$.ajax({
+						url: "http://58.59.92.190:5000/getSlot", 
+						dataType: "json", 
+						type: "POST", 
+						contentType: "application/json; charset=utf-8",
+						data: JSON.stringify({"query": user_query}),
+						success: function(result) {
+							$("#SF").text(result['slot']);
+							// 调用意图识别模块:
+							$.ajax({
+								url: "http://58.59.92.190:5000/getIntent", 
+								dataType: "json", 
+								type: "POST", 
+								contentType: "application/json; charset=utf-8",
+								data: JSON.stringify({"query": user_query, "slot": result['slot']}),
+								success: function(result) {
+									// 调用答案检索模块:
+									$("#ID").text(result['intent']);
+									$.ajax({
+										url: "http://58.59.92.190:5000/getAnswer", 
+										dataType: "json", 
+										type: "POST", 
+										contentType: "application/json; charset=utf-8",
+										data: JSON.stringify({"query": user_query, "intent": result['to_user']}),
+										success: function(result) {
+											$("#RP").text(result['desc']);
+											$("#AC").text(result['cypher'][0]['cypher']);
+											$("#KR").text(result['to_user']);
+										},
+									});
+								},
+							});
+						},
+						error: function(result) {
+							alert('槽位填充失败，请稍后再试！');
+						}
+					});
+				});
+			});
+
+		</script>
+
+		<div class="container">
+			
+			<div class="row clearfix">
+				<div class="col-md-12 column">
+					<h2>
+						基于知识图谱的医疗问答机器人
+					</h2>
+				
+					<!--<p>
+						文字转语音（TTS）是用小度音箱做的，后面的意图识别、槽位填充、知识检索是我们自己的模型在做。
+					</p>!-->
+					<p>
+						此次疫情充分暴露了医疗资源的稀缺性。然而，在线医疗问答Bot的发展可以为患者提供简单的知识问答，从而缓解门诊的接待压力。
+					</p>
+					<p>
+						未来的患者，应该是先通过Bot进行自查和自诊，当无法解决时才需要到实体医院就诊，大大提高就诊效率。
+					</p>
+					<p>
+						<a class="btn" href="https://www.zhihu.com/question/20784172/answer/1170824292">观看视频 »</a>
+					</p>
+					<nav class="navbar navbar-default" role="navigation">
+
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+							<ul class="nav navbar-nav">
+								<li>
+									<a href="http://123.56.161.249:7474/browser/">Knowledge Graph</a>
+								</li>
+								<li>
+									<a href="http://58.59.92.190:5000/bot#">Slot Filling</a>
+								</li>
+							</ul>
+						</div>
+
+					</nav>
+					
+						<div class="form-group">
+							<label for="exampleInputEmail1">User query</label><input class="form-control" id="query">
+						</div>
+						<button class="btn btn-default" id="sub">Submit</button>
+			
+					<div class="form-group">
+						<label for="exampleInputFile">Slot Filling</label>
+						<p class="help-block" id="SF">
+							The result of SF.
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputFile">Intent Dection</label>
+						<p class="help-block" id="ID">
+							The result of ID.
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputFile">Reasoning Process</label>
+						<p class="help-block" id="RP">
+							The result of RP.
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputFile">Automatic Cypher</label>
+						<p class="help-block" id="AC">
+							The result of AC.
+						</p>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputFile">Knowledge Retrieval</label>
+						<p class="help-block" id="KR">
+							The result of KR.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+<div class="xl-chrome-ext-bar" id="xl_chrome_ext_{4DB361DE-01F7-4376-B494-639E489D19ED}" style="display: none;">
+      <div class="xl-chrome-ext-bar__logo"></div>
+
+      <a id="xl_chrome_ext_download" href="javascript:;" class="xl-chrome-ext-bar__option">下载视频</a>
+      <a id="xl_chrome_ext_close" href="javascript:;" class="xl-chrome-ext-bar__close"></a>
+    </div></body></html>
